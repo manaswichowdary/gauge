@@ -89,8 +89,8 @@ if settings is None:
         st.stop()
     run, results, agreement = load_snapshot(SNAPSHOT_PATH)
     is_fake = bool(run.notes and "FAKE" in run.notes)
-    st.info(f"Read only demo. These are the saved results of run {run.id} ({run.started_at:%Y-%m-%d})"
-            f"{'' if is_fake else ' on AWS Bedrock'}. Nothing here calls a model.")
+    st.info(f"Results from run {run.id}{'' if is_fake else ' on AWS Bedrock'}, {run.started_at:%Y-%m-%d}. "
+            "This page shows saved results and does not call any models.")
 else:
     engine = make_engine(settings.database_url)
     init_db(engine)
