@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/manaswichowdary/gauge/actions/workflows/ci.yml/badge.svg)](https://github.com/manaswichowdary/gauge/actions/workflows/ci.yml)
 
+**Live dashboard:** [gauge-eval.streamlit.app](https://gauge-eval.streamlit.app)
+
 An evaluation harness for LLM agents on AWS Bedrock. It compares models and prompts on the same tasks, reports accuracy, latency (p50 and p95) and cost per 100 tasks, and fails a build when quality drops.
 
 ## The problem
