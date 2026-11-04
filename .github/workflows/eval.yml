@@ -39,9 +39,10 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: us-east-1
       - name: Run the eval
+        id: eval_run
         run: python -m gauge.cli run --mode scheduled --yes
       - name: Write the report
-        if: always()
+        if: ${{ always() && steps.eval_run.outcome != 'skipped' }}
         run: python -m gauge.cli report
       - name: Comment the report on the pull request
         if: ${{ always() && github.event_name == 'pull_request' }}
@@ -59,3 +60,4 @@ jobs:
         with:
           name: eval-report
           path: reports/
+          if-no-files-found: ignore
