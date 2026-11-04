@@ -131,7 +131,19 @@ of the default full run. Choose them by name with `--setups ollama-llama3.1`. Th
 
 ## AIPerf and SageMaker
 
-Status: both are built and tested against fakes and stubs. They have not been run against a real AIPerf install or a real SageMaker endpoint yet. I will update this section with real numbers after the first real run.
+AIPerf: run for real against a local Ollama model (Qwen 2.5 7B) on a MacBook Air, 20 requests at each of concurrency 1, 2 and 4, 0 errors.
+
+| Concurrency | Time to first token (avg) | Request latency (avg) | Output throughput |
+|---|---|---|---|
+| 1 | 5.5 s | 79 s | 4.3 tokens/s |
+| 2 | 87 s | 167 s | 4.9 tokens/s |
+| 4 | 169 s | 223 s | 6.8 tokens/s |
+
+Going from 1 to 4 concurrent requests made total throughput only about 1.6x better, while the wait for the first token grew about 30x. A local Ollama server mostly handles requests one at a time, so extra requests sit in a queue. This is the point where a local model stops being usable for several users at once, and it is the reason to compare against a hosted endpoint.
+
+Numbers are from one laptop and one run, so treat them as a rough picture, not a benchmark.
+
+SageMaker: built and tested against stubs. It has not been run against a real endpoint yet. I will add real numbers after the first run.
 
 - **AIPerf.** NVIDIA's open source load tester. `make aiperf` runs it against a local model at several concurrency levels and
   shows time to first token, latency and throughput on the dashboard. It works against OpenAI style servers, so it covers local

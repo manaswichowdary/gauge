@@ -1,0 +1,118 @@
+{
+ "setup": "ollama-qwen2.5",
+ "model": "qwen2.5:7b",
+ "url": "http://localhost:11434",
+ "requests_per_level": 20,
+ "aiperf_version": "0.13.0",
+ "started_at": "2026-11-04T21:41:12+00:00",
+ "levels": [
+  {
+   "concurrency": 1,
+   "returncode": 0,
+   "wall_s": 1617.2,
+   "metrics": {
+    "time_to_first_token": {
+     "avg": 5453.47470635,
+     "p50": 5165.054749999999,
+     "p90": 5308.4113503,
+     "p99": 10424.446328039992,
+     "unit": "ms"
+    },
+    "request_latency": {
+     "avg": 79018.53431044999,
+     "p50": 76832.757938,
+     "p90": 114674.3243419,
+     "p99": 125341.76014707999,
+     "unit": "ms"
+    },
+    "inter_token_latency": {
+     "avg": 216.76729702845438,
+     "p50": 218.8778940635292,
+     "p90": 221.42874815164973,
+     "p99": 232.38430426351002,
+     "unit": "ms"
+    },
+    "output_token_throughput": {
+     "avg": 4.300532352519323,
+     "unit": "tokens/sec"
+    },
+    "request_throughput": {
+     "avg": 0.012620784600203442,
+     "unit": "requests/sec"
+    }
+   }
+  },
+  {
+   "concurrency": 2,
+   "returncode": 0,
+   "wall_s": 1690.7,
+   "metrics": {
+    "time_to_first_token": {
+     "avg": 87108.9568063,
+     "p50": 82617.8919375,
+     "p90": 163199.49435000005,
+     "p99": 224437.64919776996,
+     "unit": "ms"
+    },
+    "request_latency": {
+     "avg": 166516.62270205,
+     "p50": 150554.7734375,
+     "p90": 305536.71101280005,
+     "p99": 339941.98106195993,
+     "unit": "ms"
+    },
+    "inter_token_latency": {
+     "avg": 183.49643721008653,
+     "p50": 214.6270381734946,
+     "p90": 264.0266226009582,
+     "p99": 273.6915464005899,
+     "unit": "ms"
+    },
+    "output_token_throughput": {
+     "avg": 4.862616107449161,
+     "unit": "tokens/sec"
+    },
+    "request_throughput": {
+     "avg": 0.011894853491803232,
+     "unit": "requests/sec"
+    }
+   }
+  },
+  {
+   "concurrency": 4,
+   "returncode": 0,
+   "wall_s": 1162.8,
+   "metrics": {
+    "time_to_first_token": {
+     "avg": 168876.9213667,
+     "p50": 124472.8072285,
+     "p90": 321611.59714170004,
+     "p99": 389667.7489507499,
+     "unit": "ms"
+    },
+    "request_latency": {
+     "avg": 222996.27929785,
+     "p50": 164920.9212705,
+     "p90": 438936.69307499996,
+     "p99": 479133.4986790199,
+     "unit": "ms"
+    },
+    "inter_token_latency": {
+     "avg": 131.18732595608094,
+     "p50": 110.2390845080292,
+     "p90": 225.17014611802995,
+     "p99": 230.66494600147098,
+     "unit": "ms"
+    },
+    "output_token_throughput": {
+     "avg": 6.8170853811621805,
+     "unit": "tokens/sec"
+    },
+    "request_throughput": {
+     "avg": 0.017333041904811036,
+     "unit": "requests/sec"
+    }
+   }
+  }
+ ]
+}
