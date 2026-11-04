@@ -42,24 +42,24 @@ def polish(chart):
 
 
 # Inter font and slightly larger text. Everything else comes from the Streamlit theme.
-st.markdown(
+# st.html applies the CSS directly. st.markdown printed the style block as text on Streamlit Cloud.
+st.html(
     """
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    html, body, [class*="css"], [data-testid="stAppViewContainer"] { font-family: 'Inter', sans-serif; font-size: 18px; }
-    h1 { font-size: 2.8rem !important; font-weight: 700 !important; letter-spacing: -0.02em; }
-    h2, h3 { font-weight: 600 !important; margin-top: 1.8rem !important; font-size: 1.7rem !important; }
-    /* Captions were small and grey. Make them bigger and lighter. */
-    [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] * { font-size: 1.05rem !important; color: #c3d0e4 !important; opacity: 1 !important; line-height: 1.55 !important; }
-    [data-testid="stCaptionContainer"] { opacity: 1 !important; }
-    [data-testid="stMetricValue"] { font-size: 2.4rem; font-weight: 600; color: #5eead4; }
-    [data-testid="stMetricLabel"], [data-testid="stMetricLabel"] * { color: #c3d0e4 !important; font-size: 1.05rem !important; }
-    [data-testid="stMetric"] { background: #111a2e; border: 1px solid #2a3a5c; border-radius: 12px; padding: 16px 20px; }
-    [data-testid="stSidebar"] * { font-size: 1.05rem; }
-    [data-testid="stAlert"] p { font-size: 1.05rem; }
-    </style>
-    """,
-    unsafe_allow_html=True,
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+html, body, [class*="css"], [data-testid="stAppViewContainer"] { font-family: 'Inter', sans-serif; font-size: 18px; }
+h1 { font-size: 2.8rem !important; font-weight: 700 !important; letter-spacing: -0.02em; }
+h2, h3 { font-weight: 600 !important; margin-top: 1.8rem !important; font-size: 1.7rem !important; }
+/* Captions were small and grey. Make them bigger and lighter. */
+[data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] * { font-size: 1.05rem !important; color: #c3d0e4 !important; opacity: 1 !important; line-height: 1.55 !important; }
+[data-testid="stCaptionContainer"] { opacity: 1 !important; }
+[data-testid="stMetricValue"] { font-size: 2.4rem; font-weight: 600; color: #5eead4; }
+[data-testid="stMetricLabel"], [data-testid="stMetricLabel"] * { color: #c3d0e4 !important; font-size: 1.05rem !important; }
+[data-testid="stMetric"] { background: #111a2e; border: 1px solid #2a3a5c; border-radius: 12px; padding: 16px 20px; }
+[data-testid="stSidebar"] * { font-size: 1.05rem; }
+[data-testid="stAlert"] p { font-size: 1.05rem; }
+</style>
+    """
 )
 
 st.title("Gauge")
@@ -117,7 +117,9 @@ df = pd.DataFrame(summarize(results))
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("Tasks run", len(results))
 c2.metric("Setups", len(df))
-c3.metric("Run cost", f"${run.total_cost_usd:.4f}")
+c3.metric("Cost of all answers", f"${df['cost_usd'].sum():.4f}",
+          help=f"This run paid ${run.total_cost_usd:.4f} for new calls. The rest of the answers were reused from the cache, "
+               "and their cost is counted here too.")
 c4.metric("Errors", int(df["errors"].sum()))
 
 st.subheader("Accuracy, speed and cost by setup")
