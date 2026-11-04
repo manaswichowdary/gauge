@@ -1,0 +1,76 @@
+name: ci
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  test:
+    name: tests (SQLite)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Offline tests (free)
+        run: python -m pytest -q
+
+  test-postgres:
+    name: tests (Postgres)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: gauge
+          POSTGRES_PASSWORD: gauge
+          POSTGRES_DB: gauge
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U gauge"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg2://gauge:gauge@localhost:5432/gauge
+      DATABASE_URL: postgresql+psycopg2://gauge:gauge@localhost:5432/gauge
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Offline tests on Postgres (free)
+        run: python -m pytest -q
+      - name: Fake run, report and rescore on Postgres (free, no AWS)
+        run: |
+          python -m gauge.cli run --mode full --provider fake --judge --yes
+          python -m gauge.cli report
+          python -m gauge.rescore
+
+  eval-gate:
+    # Real model calls cost cents. Runs only when you trigger it by hand and have set the AWS_ROLE_ARN secret.
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      DATABASE_URL: sqlite:///ci.db
+      AWS_REGION: us-east-1
+      BUDGET_CAP_USD: "0.50"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+      - run: python -m gauge.cli run --mode scheduled --yes
+      - run: python -m gauge.cli gate --baseline baseline-ci.json --mode scheduled

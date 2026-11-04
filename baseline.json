@@ -1,0 +1,10 @@
+{
+  "claude-haiku": 0.9844,
+  "claude-haiku-short-prompt": 1.0,
+  "llama-3.1-8b": 0.4062,
+  "mistral-small": 0.5781,
+  "nova-lite": 0.9453,
+  "nova-lite-no-tools": 0.4844,
+  "nova-micro": 0.9062,
+  "nova-pro": 0.9453
+}

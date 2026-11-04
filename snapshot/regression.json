@@ -1,0 +1,18 @@
+{
+ "setup": "nova-lite",
+ "tasks": 64,
+ "repeats": 1,
+ "baseline_accuracy": 0.9531,
+ "regressed_accuracy": 0.6094,
+ "drop_points": 34.4,
+ "limit_points": 5.0,
+ "caught": true,
+ "seconds_to_detect": 61.6,
+ "cost_usd": 0.0044,
+ "healthy_run_id": 12,
+ "degraded_run_id": 13,
+ "gate_messages": [
+  "FAIL nova-lite: 95% -> 61% (dropped 34.4 points, limit 5)"
+ ],
+ "degraded_prompt": "Answer immediately from memory in at most five words. Do not use any tools. Do not show any work. End with 'ANSWER: <your answer>'."
+}

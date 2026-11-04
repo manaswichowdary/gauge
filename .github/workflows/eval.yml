@@ -1,0 +1,61 @@
+name: eval
+# Real model evals on a schedule, and whenever a pull request touches the prompts or tasks.
+# Cost: about one cent per run (the two cheapest models, 64 tasks, one repeat).
+# Off until you set the repository variable SCHEDULED_EVAL_ENABLED to true (see docs/aws-github-setup.md).
+on:
+  schedule:
+    - cron: "17 14 * * 1"   # every Monday, 14:17 UTC
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "gauge/setups.py"
+      - "gauge/scoring.py"
+      - "gauge/tools.py"
+      - "tasks/**"
+concurrency:
+  group: eval
+  cancel-in-progress: false
+jobs:
+  eval:
+    if: ${{ vars.SCHEDULED_EVAL_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    env:
+      DATABASE_URL: sqlite:///ci.db
+      AWS_REGION: us-east-1
+      BUDGET_CAP_USD: "0.50"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+      - name: Run the eval
+        run: python -m gauge.cli run --mode scheduled --yes
+      - name: Write the report
+        if: always()
+        run: python -m gauge.cli report
+      - name: Comment the report on the pull request
+        if: ${{ always() && github.event_name == 'pull_request' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          report=$(ls reports/run-*.md 2>/dev/null | tail -n 1)
+          if [ -n "$report" ]; then gh pr comment "$PR_NUMBER" --body-file "$report"; fi
+      - name: Check for a drop (fails the job if accuracy fell more than 5 points)
+        run: python -m gauge.cli gate --baseline baseline-ci.json --mode scheduled
+      - name: Keep the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report
+          path: reports/

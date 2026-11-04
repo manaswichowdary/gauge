@@ -1,0 +1,2 @@
+# Only needed for `make sagemaker-run`. Version 2 of the SageMaker SDK.
+sagemaker>=2.216,<3

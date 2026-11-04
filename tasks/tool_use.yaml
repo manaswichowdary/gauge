@@ -1,0 +1,62 @@
+- id: tool-01
+  category: tool_use
+  prompt: What is the total price of 2 Rain Jackets (SKU-1002) and 1 Headlamp (SKU-1004)?
+  check_type: number
+  expected: 292.99
+  tools_allowed: [lookup, calculator]
+- id: tool-02
+  category: tool_use
+  prompt: What is the total value of the stock of SKU-1001 (price times units in stock)?
+  check_type: number
+  expected: 3759
+  tools_allowed: [lookup, calculator]
+- id: tool-03
+  category: tool_use
+  prompt: What is the name of the manager of employee E-201?
+  check_type: contains
+  expected: [Marcus Lee]
+  tools_allowed: [lookup]
+- id: tool-04
+  category: tool_use
+  prompt: Who is the manager of the manager of employee E-201? Give the name.
+  check_type: contains
+  expected: [Ken Watanabe]
+  tools_allowed: [lookup]
+- id: tool-05
+  category: tool_use
+  prompt: How many units in total are in stock across all products held in the Phoenix warehouse? The products are SKU-1001 to SKU-1005.
+  check_type: number
+  expected: 352
+  tolerance: 0.0
+  tools_allowed: [lookup, calculator]
+- id: tool-06
+  category: tool_use
+  prompt: What is the cost of 3 Water Bottles (SKU-1003) with 8 percent tax added, in dollars?
+  check_type: number
+  expected: 59.13
+  tools_allowed: [lookup, calculator]
+- id: tool-07
+  category: tool_use
+  prompt: A customer received an opened electronics item. How many days do they have to return it?
+  check_type: number
+  expected: 15
+  tolerance: 0.0
+  tools_allowed: [fake_search]
+- id: tool-08
+  category: tool_use
+  prompt: Among SKU-1001 to SKU-1005, which product is the cheapest one that is currently in stock? Give its name.
+  check_type: contains
+  expected: [Water Bottle]
+  tools_allowed: [lookup]
+- id: tool-09
+  category: tool_use
+  prompt: Which team is the manager of employee E-305 on?
+  check_type: contains
+  expected: [Search]
+  tools_allowed: [lookup]
+- id: tool-10
+  category: tool_use
+  prompt: What is the combined price of one of each product, SKU-1001 to SKU-1005, in dollars?
+  check_type: number
+  expected: 345.74
+  tools_allowed: [lookup, calculator]

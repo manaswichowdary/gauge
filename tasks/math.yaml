@@ -1,0 +1,63 @@
+- id: math-01
+  category: math
+  prompt: What is 48763 multiplied by 9217?
+  check_type: number
+  expected: 449448571
+  tolerance: 0.0000001
+  tools_allowed: [calculator]
+- id: math-02
+  category: math
+  prompt: What is 15 percent of 1234.56?
+  check_type: number
+  expected: 185.184
+  tools_allowed: [calculator]
+- id: math-03
+  category: math
+  prompt: What is 2 to the power of 20?
+  check_type: number
+  expected: 1048576
+  tolerance: 0.0000001
+  tools_allowed: [calculator]
+- id: math-04
+  category: math
+  prompt: What is the square root of 1764?
+  check_type: number
+  expected: 42
+  tools_allowed: [calculator]
+- id: math-05
+  category: math
+  prompt: Compute 17 times 23 plus 89.
+  check_type: number
+  expected: 480
+  tools_allowed: [calculator]
+- id: math-06
+  category: math
+  prompt: A shirt costs 840 dollars before a 15 percent discount. How many dollars is the discount?
+  check_type: number
+  expected: 126
+  tools_allowed: [calculator]
+- id: math-07
+  category: math
+  prompt: Compute (3 + 4) * (12 - 5) ** 2 using the normal order of operations.
+  check_type: number
+  expected: 343
+  tools_allowed: [calculator]
+- id: math-08
+  category: math
+  prompt: If 100000 dollars grows at 5 percent compounded yearly, how many dollars is it after 3 years?
+  check_type: number
+  expected: 115762.5
+  tools_allowed: [calculator]
+- id: math-09
+  category: math
+  prompt: What is the remainder when 7919 is divided by 13?
+  check_type: number
+  expected: 2
+  tolerance: 0.0
+  tools_allowed: [calculator]
+- id: math-10
+  category: math
+  prompt: What is 360 divided by 7? Round to two decimal places.
+  check_type: number
+  expected: 51.43
+  tools_allowed: [calculator]

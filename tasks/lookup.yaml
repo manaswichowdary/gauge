@@ -1,0 +1,64 @@
+- id: lookup-01
+  category: lookup
+  prompt: What is the price of product SKU-1003 in dollars?
+  check_type: number
+  expected: 18.25
+  tools_allowed: [lookup]
+- id: lookup-02
+  category: lookup
+  prompt: How many units of SKU-1004 are in stock?
+  check_type: number
+  expected: 0
+  tolerance: 0.0
+  tools_allowed: [lookup]
+- id: lookup-03
+  category: lookup
+  prompt: Which warehouse holds SKU-1002?
+  check_type: contains
+  expected: [Denver]
+  tools_allowed: [lookup]
+- id: lookup-04
+  category: lookup
+  prompt: What is the name of the product with SKU-1005?
+  check_type: contains
+  expected: [Camp Stove]
+  tools_allowed: [lookup]
+- id: lookup-05
+  category: lookup
+  prompt: Which team is employee E-305 on?
+  check_type: contains
+  expected: [Search]
+  tools_allowed: [lookup]
+- id: lookup-06
+  category: lookup
+  prompt: What is the job title of employee E-310?
+  check_type: contains
+  expected: [Director]
+  tools_allowed: [lookup]
+- id: lookup-07
+  category: lookup
+  prompt: How many days after delivery can a customer request a refund for an unopened item?
+  check_type: number
+  expected: 45
+  tolerance: 0.0
+  tools_allowed: [fake_search]
+- id: lookup-08
+  category: lookup
+  prompt: How many business days does standard shipping take?
+  check_type: number
+  expected: 5
+  tolerance: 0.0
+  tools_allowed: [fake_search]
+- id: lookup-09
+  category: lookup
+  prompt: How many years of warranty does the Camp Stove have?
+  check_type: number
+  expected: 3
+  tolerance: 0.0
+  tools_allowed: [fake_search]
+- id: lookup-10
+  category: lookup
+  prompt: At what time does customer support close each day it is open (Arizona time)?
+  check_type: contains
+  expected: [6pm]
+  tools_allowed: [fake_search]

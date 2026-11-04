@@ -1,0 +1,58 @@
+{
+ "setup": "nova-lite",
+ "model_id": "amazon.nova-lite-v1:0",
+ "requests_per_level": 24,
+ "started_at": "2026-11-04T00:37:23+00:00",
+ "levels": [
+  {
+   "concurrency": 1,
+   "requests": 24,
+   "ok": 23,
+   "errors": 1,
+   "retries": 0,
+   "p50_ms": 1075,
+   "p95_ms": 2187,
+   "p95_with_retries_ms": 2187,
+   "throughput_per_s": 0.76,
+   "wall_s": 30.2
+  },
+  {
+   "concurrency": 4,
+   "requests": 24,
+   "ok": 24,
+   "errors": 0,
+   "retries": 0,
+   "p50_ms": 1006,
+   "p95_ms": 2671,
+   "p95_with_retries_ms": 2671,
+   "throughput_per_s": 2.97,
+   "wall_s": 8.1
+  },
+  {
+   "concurrency": 8,
+   "requests": 24,
+   "ok": 24,
+   "errors": 0,
+   "retries": 0,
+   "p50_ms": 1032,
+   "p95_ms": 2470,
+   "p95_with_retries_ms": 2470,
+   "throughput_per_s": 5.35,
+   "wall_s": 4.5
+  },
+  {
+   "concurrency": 16,
+   "requests": 24,
+   "ok": 24,
+   "errors": 0,
+   "retries": 7,
+   "p50_ms": 1021,
+   "p95_ms": 3713,
+   "p95_with_retries_ms": 6361,
+   "throughput_per_s": 2.27,
+   "wall_s": 10.6
+  }
+ ],
+ "first_degraded_level": 16,
+ "cost_usd": 0.0089
+}

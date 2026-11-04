@@ -1,0 +1,2 @@
+# Only needed for `make aiperf`. AIPerf needs Python 3.11 to 3.13.
+aiperf
