@@ -1,5 +1,7 @@
 # Gauge
 
+[![CI](https://github.com/manaswichowdary/gauge/actions/workflows/ci.yml/badge.svg)](https://github.com/manaswichowdary/gauge/actions/workflows/ci.yml)
+
 A small harness that compares AI agent setups (model, system prompt, tools on or off) on the same tasks and reports accuracy, latency (p50 and p95) and cost per 100 tasks. It also checks how far an LLM judge can be trusted against my own labels, catches regressions with a gate that fails when accuracy drops more than 5 points, load tests a setup, and runs on AWS Bedrock or a local model.
 
 ## What I found
