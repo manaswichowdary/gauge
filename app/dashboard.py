@@ -24,20 +24,39 @@ STRETCH = {"width": "stretch"} if "width" in inspect.signature(st.dataframe).par
 st.set_page_config(page_title="Gauge", page_icon="📊", layout="wide")
 
 # Colors used by the charts. They match the theme in .streamlit/config.toml.
-ACCENT = "#5eead4"
-MUTED = "#8aa0bd"
+ACCENT = "#5eead4"   # teal
+AMBER = "#fbbf24"
+TEXT = "#e6edf7"
+SOFT = "#c3d0e4"     # lighter than before, so axis labels and captions are easy to read
+PALETTE = ["#5eead4", "#fbbf24", "#f472b6", "#60a5fa", "#a78bfa", "#fb923c", "#4ade80", "#f87171"]
+
+# Chart text sizes and colors, applied to every chart through polish().
+AXIS = dict(labelFontSize=14, titleFontSize=15, labelColor=SOFT, titleColor=TEXT,
+            gridColor="#2a3a5c", domainColor="#4a5d85", tickColor="#4a5d85", titlePadding=10, labelLimit=260)
+LEGEND = dict(labelFontSize=14, titleFontSize=15, labelColor=SOFT, titleColor=TEXT, symbolSize=180)
+
+
+def polish(chart):
+    """Bigger, brighter chart text on the dark background."""
+    return chart.configure_view(strokeWidth=0).configure_axis(**AXIS).configure_legend(**LEGEND)
+
 
 # Inter font and slightly larger text. Everything else comes from the Streamlit theme.
 st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    html, body, [class*="css"], [data-testid="stAppViewContainer"] { font-family: 'Inter', sans-serif; font-size: 17px; }
-    h1 { font-size: 2.6rem !important; font-weight: 700 !important; letter-spacing: -0.02em; }
-    h2, h3 { font-weight: 600 !important; margin-top: 1.6rem !important; }
-    [data-testid="stMetricValue"] { font-size: 2.2rem; font-weight: 600; }
-    [data-testid="stMetricLabel"] { color: #8aa0bd; }
-    [data-testid="stMetric"] { background: #111a2e; border: 1px solid #1f2d4a; border-radius: 12px; padding: 14px 18px; }
+    html, body, [class*="css"], [data-testid="stAppViewContainer"] { font-family: 'Inter', sans-serif; font-size: 18px; }
+    h1 { font-size: 2.8rem !important; font-weight: 700 !important; letter-spacing: -0.02em; }
+    h2, h3 { font-weight: 600 !important; margin-top: 1.8rem !important; font-size: 1.7rem !important; }
+    /* Captions were small and grey. Make them bigger and lighter. */
+    [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] * { font-size: 1.05rem !important; color: #c3d0e4 !important; opacity: 1 !important; line-height: 1.55 !important; }
+    [data-testid="stCaptionContainer"] { opacity: 1 !important; }
+    [data-testid="stMetricValue"] { font-size: 2.4rem; font-weight: 600; color: #5eead4; }
+    [data-testid="stMetricLabel"], [data-testid="stMetricLabel"] * { color: #c3d0e4 !important; font-size: 1.05rem !important; }
+    [data-testid="stMetric"] { background: #111a2e; border: 1px solid #2a3a5c; border-radius: 12px; padding: 16px 20px; }
+    [data-testid="stSidebar"] * { font-size: 1.05rem; }
+    [data-testid="stAlert"] p { font-size: 1.05rem; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -122,13 +141,13 @@ st.caption("Top left is best: more accurate and cheaper. The cost axis is logari
 points = alt.Chart(df).mark_circle(size=220, opacity=0.9).encode(
     x=alt.X("cost_per_100:Q", title="Cost per 100 tasks (USD, log scale)", scale=alt.Scale(type="log")),
     y=alt.Y("accuracy:Q", title="Accuracy", scale=alt.Scale(domain=[0, 1.05]), axis=alt.Axis(format="%", values=[0, 0.2, 0.4, 0.6, 0.8, 1.0])),
-    color=alt.Color("setup:N", title="Setup", scale=alt.Scale(scheme="tableau10")),
+    color=alt.Color("setup:N", title="Setup", scale=alt.Scale(range=PALETTE)),
     tooltip=["setup", alt.Tooltip("accuracy:Q", format=".1%"), alt.Tooltip("cost_per_100:Q", format="$.4f"),
              alt.Tooltip("p50_ms:Q", format=",.0f")],
 )
-labels_layer = alt.Chart(df).mark_text(align="left", dx=12, dy=-10, fontSize=12, color=MUTED).encode(
+labels_layer = alt.Chart(df).mark_text(align="left", dx=12, dy=-10, fontSize=14, color=SOFT).encode(
     x="cost_per_100:Q", y="accuracy:Q", text="setup:N")
-st.altair_chart((points + labels_layer).properties(height=380).configure_view(strokeWidth=0), **STRETCH)
+st.altair_chart(polish((points + labels_layer).properties(height=380)), **STRETCH)
 
 st.subheader("Accuracy by category")
 cat = pd.DataFrame(by_category(results)).T
@@ -138,10 +157,10 @@ base = alt.Chart(heat).encode(
     y=alt.Y("setup:N", title=None, sort=list(table["Setup"])),
 )
 cells = base.mark_rect(cornerRadius=4).encode(
-    color=alt.Color("accuracy:Q", scale=alt.Scale(domain=[0, 1], range=["#7f1d1d", "#92400e", "#14532d"]), legend=None))
-numbers = base.mark_text(fontSize=14, fontWeight=600, color="white").encode(
+    color=alt.Color("accuracy:Q", scale=alt.Scale(domain=[0, 1], range=["#b91c1c", "#b45309", "#15803d"]), legend=None))
+numbers = base.mark_text(fontSize=15, fontWeight=600, color="white").encode(
     text=alt.Text("accuracy:Q", format=".0%"))
-st.altair_chart((cells + numbers).properties(height=36 * len(cat) + 40).configure_view(strokeWidth=0), **STRETCH)
+st.altair_chart(polish((cells + numbers).properties(height=36 * len(cat) + 40)), **STRETCH)
 
 flaky = flaky_tasks(results)
 if flaky:
@@ -184,17 +203,17 @@ if load:
     lt = pd.DataFrame(load["levels"])
     lc1, lc2 = st.columns(2)
     with lc1:
-        st.altair_chart(alt.Chart(lt).mark_line(point=True, color=ACCENT).encode(
-            x=alt.X("concurrency:O", title="Concurrent requests"),
+        st.altair_chart(polish(alt.Chart(lt).mark_line(point=True, color=AMBER, strokeWidth=3).encode(
+            x=alt.X("concurrency:O", title="Concurrent requests", axis=alt.Axis(labelAngle=0)),
             y=alt.Y("p95_with_retries_ms:Q", title="p95 latency incl. retries (ms)"),
             tooltip=["concurrency", "p50_ms", "p95_ms", "p95_with_retries_ms", "retries", "errors"],
-        ).properties(height=260).configure_view(strokeWidth=0), **STRETCH)
+        ).properties(height=260)), **STRETCH)
     with lc2:
-        st.altair_chart(alt.Chart(lt).mark_bar(color=ACCENT).encode(
-            x=alt.X("concurrency:O", title="Concurrent requests"),
+        st.altair_chart(polish(alt.Chart(lt).mark_bar(color=ACCENT).encode(
+            x=alt.X("concurrency:O", title="Concurrent requests", axis=alt.Axis(labelAngle=0)),
             y=alt.Y("throughput_per_s:Q", title="Answers per second"),
             tooltip=["concurrency", "throughput_per_s", "ok", "errors"],
-        ).properties(height=260).configure_view(strokeWidth=0), **STRETCH)
+        ).properties(height=260)), **STRETCH)
     knee = load.get("first_degraded_level")
     st.caption(f"First level that degraded: {knee}." if knee else "No level degraded in this test.")
 
