@@ -1,4 +1,4 @@
-"""Re-grade the stored answers of one run with the current judge. Costs a few cents (Nova Micro).
+"""Re-grade the stored answers of one run with the current judge. Costs a few cents (Nova Lite by default).
 
 Use it after changing judge.py: python -m gauge.rejudge
 Only the judge is called. The models being tested are not called again.

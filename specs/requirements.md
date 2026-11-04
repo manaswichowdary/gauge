@@ -1,6 +1,6 @@
 # Requirements
 
-Written in the Kiro spec format: user stories with acceptance criteria in the form "WHEN ... THEN the system SHALL ...".
+User stories with acceptance criteria in the form "WHEN ... THEN the system SHALL ...".
 These describe what the harness does today. Each one is covered by a test or a command you can run.
 
 ## 1. Compare agent setups on the same tasks
