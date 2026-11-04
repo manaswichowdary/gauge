@@ -2,7 +2,19 @@
 
 [![CI](https://github.com/manaswichowdary/gauge/actions/workflows/ci.yml/badge.svg)](https://github.com/manaswichowdary/gauge/actions/workflows/ci.yml)
 
-A small harness that compares AI agent setups (model, system prompt, tools on or off) on the same tasks and reports accuracy, latency (p50 and p95) and cost per 100 tasks. It also checks how far an LLM judge can be trusted against my own labels, catches regressions with a gate that fails when accuracy drops more than 5 points, load tests a setup, and runs on AWS Bedrock or a local model.
+An evaluation harness for LLM agents on AWS Bedrock. It compares models and prompts on the same tasks, reports accuracy, latency (p50 and p95) and cost per 100 tasks, and fails a build when quality drops.
+
+## The problem
+
+Teams pick a model by feel and change prompts without knowing what they broke. A cheaper model might be good enough, and a prompt edit might quietly make things worse. Gauge turns both questions into numbers.
+
+## The result
+
+On 64 tasks across 8 setups (1024 scored answers, 0 lost to errors), **Nova Lite scored 95% against Claude Haiku's 98% at about 18 times lower cost** ($0.0129 against $0.2373 per 100 tasks). When I broke a prompt on purpose, accuracy fell from 95% to 61%, and the CI gate caught it in 62 seconds for under half a cent.
+
+## One hard decision
+
+I did not trust the LLM judge until I measured it. I labeled 62 answers by hand and compared both scorers to my labels. The rule scorer agreed on 98.4% (kappa 0.97) and the judge on 83.9% (kappa 0.67), and the judge was clearly weaker on the harder tasks. So the rules are the source of truth for accuracy and the judge is a second opinion. The details are in "Can the judge be trusted?" below.
 
 ## What I found
 
@@ -116,6 +128,8 @@ Setups can run on a local server with an OpenAI style API, such as Ollama, using
 of the default full run. Choose them by name with `--setups ollama-llama3.1`. The provider code is tested against a fake server.
 
 ## AIPerf and SageMaker
+
+Status: both are built and tested against fakes and stubs. They have not been run against a real AIPerf install or a real SageMaker endpoint yet. I will update this section with real numbers after the first real run.
 
 - **AIPerf.** NVIDIA's open source load tester. `make aiperf` runs it against a local model at several concurrency levels and
   shows time to first token, latency and throughput on the dashboard. It works against OpenAI style servers, so it covers local
