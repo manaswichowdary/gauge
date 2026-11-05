@@ -29,5 +29,5 @@ It runs at 1, 2 and 4 concurrent requests, 20 requests each. Change that with
 ## If something fails
 
 Scroll up in the terminal for AIPerf's own error. The usual causes are Ollama not running, the model not pulled, or no internet
-for the tokenizer. I could not run AIPerf from my side, so the first run may need a small fix to how the summary file is read.
+for the tokenizer. I have run it end to end on a MacBook Air against Ollama with Qwen 2.5 7B, so the steps above are the ones that worked.
 If `snapshot/aiperf.json` has empty `metrics`, send me one of the `profile_export_aiperf.json` files and I will fix it.

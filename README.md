@@ -143,14 +143,14 @@ Going from 1 to 4 concurrent requests made total throughput only about 1.6x bett
 
 Numbers are from one laptop and one run, so treat them as a rough picture, not a benchmark.
 
-SageMaker: built and tested against stubs. It has not been run against a real endpoint yet. I will add real numbers after the first run.
+SageMaker: built and tested against stubs, then tried on a real account twice. Both times AWS had no capacity for the GPU instance in us-east-1 (`InsufficientInstanceCapacity` on `ml.g5.2xlarge` and `ml.g6.2xlarge`), so no benchmark has finished yet. The cleanup ran both times and nothing was left billing. I will add real numbers after a successful run.
 
 - **AIPerf.** NVIDIA's open source load tester. `make aiperf` runs it against a local model at several concurrency levels and
   shows time to first token, latency and throughput on the dashboard. It works against OpenAI style servers, so it covers local
-  models. Bedrock is covered by my own load test above. See `docs/aiperf.md`.
+  models. Bedrock is covered by my own load test above. I ran it for real on my laptop, and the results are in the table above. See `docs/aiperf.md`.
 - **SageMaker.** `make sagemaker-run` starts a SageMaker endpoint serving Qwen 2.5 7B, benchmarks it against the same tasks, and
   deletes the endpoint, even on a failure. Cost per call comes from the instance hourly price and the call time. This is the
-  only step that costs real credits, so it asks first and prints an estimate. See `docs/sagemaker.md`.
+  only step that costs real credits, so it asks first and prints an estimate. It has not completed a run yet (see above). See `docs/sagemaker.md`.
 
 ## How it works
 
