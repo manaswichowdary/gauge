@@ -45,7 +45,8 @@ Add this policy to the IAM user you use for `aws configure`. Replace the role AR
         "sagemaker:CreateModel", "sagemaker:DeleteModel", "sagemaker:DescribeModel",
         "sagemaker:CreateEndpointConfig", "sagemaker:DeleteEndpointConfig", "sagemaker:DescribeEndpointConfig",
         "sagemaker:CreateEndpoint", "sagemaker:DeleteEndpoint", "sagemaker:DescribeEndpoint",
-        "sagemaker:ListEndpoints", "sagemaker:InvokeEndpoint"
+        "sagemaker:ListEndpoints", "sagemaker:InvokeEndpoint",
+        "sagemaker:AddTags", "sagemaker:ListTags"
       ],
       "Resource": "*"
     },
@@ -53,10 +54,21 @@ Add this policy to the IAM user you use for `aws configure`. Replace the role AR
       "Effect": "Allow",
       "Action": "iam:PassRole",
       "Resource": "arn:aws:iam::YOUR_ACCOUNT_ID:role/sagemaker-run"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:CreateBucket", "s3:ListBucket", "s3:GetBucketLocation",
+        "s3:GetObject", "s3:PutObject", "s3:DeleteObject"
+      ],
+      "Resource": ["arn:aws:s3:::sagemaker-*", "arn:aws:s3:::sagemaker-*/*"]
     }
   ]
 }
 ```
+
+The S3 block is there because the SageMaker Python SDK keeps the model files in a default bucket named
+`sagemaker-<region>-<your account id>` and creates it on the first run. Without it the deploy stops with `AccessDenied` on `s3:CreateBucket`.
 
 If the deploy stops with `AccessDenied`, the error names the missing action. Add it and run again. Do not widen it to `*`.
 
@@ -78,7 +90,10 @@ Run `make export` afterwards to refresh `snapshot/run.json`.
 
 ## Limits, said plainly
 
-- I could not run this against a real AWS account, so the first run may need a small fix. The code that deletes the endpoint is
+- I have tried this on a real AWS account twice. It got as far as asking SageMaker for the endpoint, then AWS answered
+  `InsufficientInstanceCapacity` for both `ml.g5.2xlarge` and `ml.g6.2xlarge` in us-east-1, which means no machines of that type
+  were free. The cleanup deleted everything both times and nothing was left billing. No benchmark has finished yet, so there are
+  no results to show. If you see that error, wait and try again later, or try another region. The code that deletes the endpoint is
   tested against a fake client. The deploy step is not, because it needs real AWS.
 - The container may not support tool calling for this model. The command runs one smoke test first and stops (and deletes
   everything) if that fails. If tools do not work, the setup will score low on tool tasks, the same way Llama and Mistral did on Bedrock.
