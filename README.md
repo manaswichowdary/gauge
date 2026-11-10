@@ -143,14 +143,14 @@ Going from 1 to 4 concurrent requests made total throughput only about 1.6x bett
 
 Numbers are from one laptop and one run, so treat them as a rough picture, not a benchmark.
 
-SageMaker: built and tested against stubs, then tried on a real account three times. Every time AWS had no capacity for the GPU instance in us-east-1 (`InsufficientInstanceCapacity` on `ml.g5.2xlarge` twice and `ml.g6.2xlarge` once), so no benchmark has finished yet. The cleanup ran every time and nothing was left billing. I will add real numbers after a successful run.
+SageMaker: one real run finished on November 10, 2026 (run 14, us-east-2, `ml.g5.2xlarge`, Qwen 2.5 7B, 64 tasks, 1 repeat). Accuracy was 50%. It did well on lookups (90%) and over refusal (100%) but badly on tool use (40%), hard tool use (0%) and math (10%). A typical answer took 2.2 seconds and the slowest 5% took 9.2 seconds. The compute cost was $0.35 per 100 tasks (the 64 answers took 8 minutes 52 seconds and $0.22), and that figure does not include the 10 to 15 minutes the endpoint spent starting up. On the same tasks Nova Lite scored 95% and Claude Haiku 98%, so this small open model on a rented GPU was far less accurate. It is one run of one model, so read it as a first data point. Earlier attempts in us-east-1 failed with `InsufficientInstanceCapacity` (`ml.g5.2xlarge` twice and `ml.g6.2xlarge` once), and the cleanup removed everything every time.
 
 - **AIPerf.** NVIDIA's open source load tester. `make aiperf` runs it against a local model at several concurrency levels and
   shows time to first token, latency and throughput on the dashboard. It works against OpenAI style servers, so it covers local
   models. Bedrock is covered by my own load test above. I ran it for real on my laptop, and the results are in the table above. See `docs/aiperf.md`.
 - **SageMaker.** `make sagemaker-run` starts a SageMaker endpoint serving Qwen 2.5 7B, benchmarks it against the same tasks, and
   deletes the endpoint, even on a failure. Cost per call comes from the instance hourly price and the call time. This is the
-  only step that costs real credits, so it asks first and prints an estimate. It has not completed a run yet (see above). See `docs/sagemaker.md`.
+  only step that costs real credits, so it asks first and prints an estimate. It has completed one run (see above). See `docs/sagemaker.md`.
 
 ## How it works
 
