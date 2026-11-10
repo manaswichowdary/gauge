@@ -318,8 +318,13 @@ def cmd_sagemaker_run(args, settings) -> int:
         with with_endpoint(deploy, lambda n: print("Cleaning up: " + ", ".join(delete_endpoint_everything(client, n))), name):
             provider = _sagemaker_provider(settings, name)
             smoke = provider.generate(SAGEMAKER_SETUP, tasks[0])
-            if smoke.error or not smoke.text:
+            model_mistake = bool(smoke.error) and str(smoke.error).startswith("hit max tool steps")
+            if (smoke.error and not model_mistake) or (not smoke.error and not smoke.text):
                 print(f"Smoke test failed, stopping: {smoke.error or 'empty answer'}")
+                print(f"  task {tasks[0].id}: {tasks[0].prompt[:200]!r}")
+                for call in smoke.tool_calls[:10]:
+                    print(f"  tool call: {call['name']} input={str(call['input'])[:150]} output={str(call['output'])[:150]}")
+                print(f"  last model text: {smoke.text[:300]!r}")
                 code = 1
             else:
                 summary = run_benchmark(
@@ -334,7 +339,12 @@ def cmd_sagemaker_run(args, settings) -> int:
     except KeyboardInterrupt:
         print("\nInterrupted. The endpoint was deleted.")
         code = 1
-    left = [e for e in list_endpoints(client) if e["name"] == name]
+    import time as _time
+    for _ in range(24):    # SageMaker lists an endpoint as Deleting for a while; wait up to 2 minutes
+        left = [e for e in list_endpoints(client) if e["name"] == name]
+        if not left:
+            break
+        _time.sleep(5)
     print("Check: the endpoint is gone." if not left else f"WARNING: {name} still exists. Run: make sagemaker-down NAME={name}")
     return code or (1 if left else 0)
 
